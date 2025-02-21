@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -34,7 +36,7 @@ public class Minesweeper {
     JButton selectDificulty = new JButton("Dificuldade");
     private Timer timer;
     private int elapsedTime = 0;
-    private final JLabel timerLabel = new JLabel("Tempo: 0s");
+    private final JLabel timerLabel = new JLabel("  0  ");
 
     MineTile[][] board;
     ArrayList<MineTile> mineList;
@@ -69,9 +71,27 @@ public class Minesweeper {
     }
 
     void setTimer() {
+        try {
+            // Carregar a fonte personalizada digital-7.ttf
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/digital-7.ttf")).deriveFont(24f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+
+            // Aplicar a fonte personalizada ao timer
+            timerLabel.setFont(customFont);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Caso não consiga carregar a fonte, aplica uma fonte padrão
+            timerLabel.setFont(new Font("Monospaced", Font.PLAIN, 24));
+        }
+
         timer = new Timer(1000, e -> {
-            elapsedTime++;
-            timerLabel.setText("Tempo: " + elapsedTime + "s");
+            if (elapsedTime < 999) {
+                elapsedTime++;
+                timerLabel.setText("  " + elapsedTime + "  ");
+            } else {
+                timer.stop();
+            }
         });
     }
 
@@ -91,7 +111,7 @@ public class Minesweeper {
         textLabel.setText("Minesweeper");
         textLabel.setOpaque(true);
 
-        timerLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        timerLabel.setFont(new Font("Monospaced", Font.PLAIN, 24));  // Fonte estilo digital
         timerLabel.setHorizontalAlignment(JLabel.CENTER);
 
         restartButton.addActionListener(e -> resetGame());
@@ -237,7 +257,7 @@ public class Minesweeper {
             tilesClicked = 0;
             elapsedTime = 0;
             textLabel.setText("Minesweeper");
-            timerLabel.setText("Tempo: 0s");
+            timerLabel.setText("  0  ");
             timerStarted = false;
             setupBoard(); // Recria o tabuleiro
             setMines(); // Coloca as minas novamente
@@ -250,7 +270,7 @@ public class Minesweeper {
             // Reinicia o tempo
             timer.stop();
             elapsedTime = 0;
-            timerLabel.setText("Tempo: 0s");
+            timerLabel.setText("  0  ");
             timerStarted = false;
         }
     }
