@@ -27,3 +27,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/jre/
+/file.xml
+/Minesweeper 2.0.exe
+/Minesweeper 2.0 script.iss
+/Output/
